@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swiggy Demo - Restaurant Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-orange-50 font-sans">
+<div class="max-w-3xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-orange-600 text-center mb-8">🍛 Food Menu</h1>
+    <div id="menu" class="grid gap-6 md:grid-cols-2"></div>
+    <div class="mt-10 text-center">
+        <a href="cart.html" class="bg-orange-500 text-white px-6 py-3 rounded hover:bg-orange-600">Go to Cart 🛒</a>
+    </div>
+</div>
+<script>
+    const items = [
+      { id: 1, name: "Paneer Butter Masala", price: 200 },
+      { id: 2, name: "Chicken Biryani", price: 250 },
+      { id: 3, name: "Veg Thali", price: 180 },
+      { id: 4, name: "Momos", price: 100 }
+    ];
+    const menuDiv = document.getElementById("menu");
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "bg-white p-5 rounded shadow";
+      div.innerHTML = `<h2 class="text-xl font-semibold">${item.name}</h2><p class="text-gray-600">₹${item.price}</p>
+        <button onclick="addToCart(${item.id})" class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add to Cart</button>`;
+      menuDiv.appendChild(div);
+    });
+    function addToCart(itemId) {
+      const selected = items.find(i => i.id === itemId);
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.push(selected);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${selected.name} added to cart!`);
+    }
+</script>
+</body>
+</html>

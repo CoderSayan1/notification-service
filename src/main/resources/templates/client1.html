@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swiggy-Style Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-orange-50 font-sans">
+
+<div class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+        <h2 class="text-2xl font-bold text-orange-600 text-center mb-4">🍽️ Order Status</h2>
+        <div id="notifications" class="space-y-3 h-64 overflow-y-auto border p-4 rounded-lg bg-orange-100">
+            <!-- Notifications will appear here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+      const socket = new SockJS('http://localhost:8080/ws');
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/notification', function (message) {
+          showNotification(message.body);
+        });
+      }, function (error) {
+        console.error('WebSocket connection error: ' + error);
+      });
+    }
+
+    function showNotification(message) {
+      const notifications = document.getElementById('notifications');
+      const notification = document.createElement('div');
+      notification.className = 'bg-white border-l-4 border-orange-500 text-orange-800 p-3 rounded shadow';
+      notification.textContent = message;
+      notifications.appendChild(notification);
+      notifications.scrollTop = notifications.scrollHeight;
+    }
+
+    connect();
+</script>
+</body>
+</html>
